@@ -1,0 +1,159 @@
+1. Configurações de Cluster
+Estas opções configuram aspectos gerais do cluster, como o nome, a comunicação entre os nós e a estratégia de replicação.
+
+cluster_name
+
+Descrição: Nome do cluster. É usado para identificar o cluster no qual o nó deve operar.
+Valor padrão: Test Cluster
+
+cluster_name: 'MyCassandraCluster'
+
+
+num_tokens
+Descrição: O número de tokens que cada nó deve ter. Cada token mapeia uma faixa de dados no cluster. A recomendação para clusters modernos é usar 256 tokens por nó, mas o valor padrão geralmente é 256.
+Valor padrão: 256
+
+num_tokens: 256
+
+
+
+listen_address
+
+Descrição: Endereço IP que o Cassandra usará para se comunicar com outros nós. Pode ser um endereço IP específico ou localhost.
+Exemplo:
+listen_address: 192.168.1.1
+
+rpc_address
+Descrição: Endereço para comunicação com os clientes via protocolo RPC (gRPC, Thrift ou CQL).
+Valor padrão: 0.0.0.0 (aceita qualquer interface de rede)
+rpc_address: 192.168.1.1
+
+
+endpoint_snitch
+
+Descrição: Define qual snitch será usado para a descoberta de nós no cluster e a localização geográfica. O snitch ajuda o Cassandra a entender a topologia da rede e otimizar a replicação.
+Valor padrão: GossipingPropertyFileSnitch
+endpoint_snitch: GossipingPropertyFileSnitch
+
+
+2. Configurações de Diretórios de Armazenamento
+Essas configurações controlam onde o Cassandra armazena seus dados e logs.
+
+data_file_directories
+Descrição: Diretórios onde os dados são armazenados.
+data_file_directories:
+  - /var/lib/cassandra/data
+
+commitlog_directory
+Descrição: Diretório onde o commit log do Cassandra é armazenado. O commit log é um registro de todas as operações feitas no banco.
+commitlog_directory: /var/lib/cassandra/commitlog
+
+saved_caches_directory
+Descrição: Diretório onde o Cassandra armazena caches persistentes (como o cache de índices).
+saved_caches_directory: /var/lib/cassandra/saved_caches
+
+3. Configurações de Rede
+Essas configurações determinam como os nós e clientes se comunicam com o Cassandra.
+
+rpc_port
+Descrição: Porta que o Cassandra usa para comunicação RPC com os clientes.
+Valor padrão: 9042
+rpc_port: 9042
+
+
+storage_port
+Descrição: Porta que o Cassandra usa para comunicação entre os nós (não é usada para clientes).
+Valor padrão: 7000
+storage_port: 7000
+
+ssl_storage_port
+Descrição: Porta usada para comunicação segura entre nós via SSL.
+Valor padrão: 7001
+ssl_storage_port: 7001
+
+broadcast_address
+Descrição: Endereço IP que será usado para comunicação entre os nós do cluster. Caso você tenha um endereço IP público e privado, você pode configurá-lo para que os nós se conectem pelo IP privado.
+broadcast_address: 192.168.1.2
+
+
+broadcast_rpc_address
+Descrição: Endereço usado para comunicação RPC entre os nós.
+broadcast_rpc_address: 192.168.1.2
+
+4. Configurações de Desempenho e Ajustes de Memória
+memtable_flush_writers
+Descrição: Número de threads para fazer flush (salvamento) das memtables em disco.
+memtable_flush_writers: 4
+
+memtable_heap_space_in_mb
+Descrição: Espaço máximo (em MB) alocado para as memtables.
+Valor padrão: 4096 MB
+memtable_heap_space_in_mb: 4096
+
+
+concurrent_reads
+Descrição: Número de leituras simultâneas que o Cassandra pode processar.
+Valor padrão: 32
+concurrent_reads: 32
+
+concurrent_writes
+Descrição: Número de gravações simultâneas que o Cassandra pode processar.
+Valor padrão: 32
+concurrent_writes: 32
+
+5. Configurações de Replicação e Consistência
+Essas configurações controlam como os dados são replicados entre os nós.
+
+key_cache_size_in_mb
+Descrição: Tamanho da cache de chaves, em MB. Usado para armazenar informações sobre as chaves mais acessadas.
+
+
+key_cache_size_in_mb
+Descrição: Tamanho da cache de chaves, em MB. Usado para armazenar informações sobre as chaves mais acessadas.
+key_cache_size_in_mb: 1000
+
+
+column_index_cache_size_in_mb
+Descrição: Tamanho da cache de índice de coluna, em MB.
+column_index_cache_size_in_mb: 1000
+
+commitlog_sync
+Descrição: Define a frequência com que o commitlog será sincronizado. Pode ser periodic ou batch (sincronização por lote).
+Valor padrão: periodic
+commitlog_sync: periodic
+
+commitlog_sync_period_in_ms
+Descrição: Frequência de sincronização do commit log (em milissegundos).
+Valor padrão: 10000 (10 segundos)
+commitlog_sync_period_in_ms: 10000
+
+6. Configurações de Segurança
+Configurações para habilitar ou desabilitar funções de segurança como autenticação, criptografia e controle de acesso.
+authenticator
+Descrição: Define o mecanismo de autenticação usado. O valor padrão é AllowAllAuthenticator, que não exige autenticação
+authenticator: PasswordAuthenticator
+
+authorizer
+Descrição: Define o mecanismo de autorização (controle de acesso). O valor padrão é AllowAllAuthorizer.
+authorizer: CassandraAuthorizer
+
+client_encryption_options
+Descrição: Configurações de criptografia para comunicação com clientes. Inclui opções como enabled, keystore, keystore_password, etc.
+client_encryption_options:
+  enabled: true
+  keystore: /etc/cassandra/keystore
+  keystore_password: cassandra
+
+
+O arquivo cassandra.yaml tem muitas configurações, e a maioria delas possui valores padrão que podem ser usados sem modificações. No entanto, em ambientes de produção, você pode precisar ajustar muitas dessas configurações, especialmente aquelas relacionadas a desempenho, replicação e segurança. Para um bom desempenho e alta disponibilidade, é importante entender como as opções de replicação, rede e armazenamento interagem no seu cluster.
+A documentação oficial do Cassandra é uma ótima fonte para explorar configurações avançadas e casos de uso específicos.
+
+
+
+
+
+
+
+
+
+
